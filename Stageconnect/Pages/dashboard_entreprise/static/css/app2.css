@@ -1,0 +1,79 @@
+/* Ajoute ceci dans css/app.css ou dans un <style> dans le <head> */
+.stats-card {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    border-radius: 1rem;
+    margin-bottom: 1rem;
+    transition: transform 0.2s;
+}
+.stats-card:hover {
+    transform: translateY(-5px) scale(1.03);
+}
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.6rem 1.5rem;
+    font-weight: 600;
+}
+/* Style pour les cards d'offres */
+.offer-card {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    padding: 1.5rem 1rem 1rem 1rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    transition: transform 0.2s;
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.offer-card:hover {
+    transform: translateY(-5px) scale(1.03);
+}
+.offer-img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 0.7rem;
+    margin-bottom: 1rem;
+}
+.offer-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+.offer-desc {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 1.2rem;
+}
+.offer-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+.offer-link {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+.offer-link:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+.offer-btn.apply {
+    background:  #90040f;
+    color: #fff;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.offer-btn.apply:hover {
+    background: #7d0e18;
+}

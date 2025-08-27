@@ -1,0 +1,230 @@
+/* ====== Style moderne pour Profil ====== */
+
+body {
+    background: #f6f8fc;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 5vh auto 0 auto;
+    background: #fff;
+    border-radius: 2vh;
+    box-shadow: 0 4px 24px rgba(82,113,255,0.10);
+    padding: 3vh 4vw 4vh 4vw;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3vh;
+}
+
+.logo img {
+    height: 60px;
+}
+
+.nav .btn {
+    background: var(--blue, #526fff);
+    color: #fff;
+    border: none;
+    border-radius: 1vh;
+    padding: 0.7em 2em;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    text-decoration: none;
+}
+
+.nav .btn:hover {
+    background: var(--peach, #ffd6b0);
+    color: var(--blue, #526fff);
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 3vw;
+    margin-bottom: 3vh;
+    background: #f8fafc;
+    border-radius: 2vh;
+    padding: 2vh 2vw;
+    box-shadow: 0 2px 8px rgba(82,113,255,0.06);
+}
+
+.profile img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--blue, #526fff);
+    background: #fff;
+}
+
+.profile-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;
+}
+
+.user-info-profil h2 {
+    margin: 0 0 0.5vh 0;
+    font-size: 2em;
+    color: var(--blue, #526fff);
+}
+
+.user-info-profil .role {
+    font-size: 1.1em;
+    color: #888;
+    margin: 0;
+}
+
+.rating {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-bottom: 1vh;
+}
+
+.buttons {
+    display: flex;
+    gap: 1vw;
+    margin-top: 1vh;
+}
+
+.buttons button {
+    background: var(--peach, #ffd6b0);
+    color: var(--blue, #526fff);
+    border: none;
+    border-radius: 1vh;
+    padding: 0.6em 1.5em;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.buttons button:hover {
+    background: var(--blue, #526fff);
+    color: #fff;
+}
+
+.tabs {
+    margin: 2vh 0 1vh 0;
+    border-bottom: 1.5px solid #e0e7ef;
+    padding-bottom: 0.5vh;
+}
+
+.tabs a {
+    color: var(--blue, #526fff);
+    text-decoration: none;
+    font-weight: bold;
+    margin-right: 2vw;
+    padding-bottom: 0.5vh;
+    border-bottom: 2.5px solid var(--blue, #526fff);
+}
+
+.section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2vw;
+    margin-top: 2vh;
+}
+
+.block {
+    flex: 1 1 250px;
+    background: #f8fafc;
+    border-radius: 1.5vh;
+    padding: 2vh 2vw;
+    margin-bottom: 2vh;
+    box-shadow: 0 1px 4px rgba(82,113,255,0.05);
+}
+
+.block h3 {
+    color: var(--peach, #ffb86b);
+    margin-top: 0;
+    margin-bottom: 1vh;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.block p {
+    margin: 0.5em 0;
+    color: #333;
+    font-size: 1em;
+}
+
+.block a {
+    color: var(--blue, #526fff);
+    text-decoration: underline;
+}
+
+.badge {
+    display: inline-block;
+    background: var(--blue, #526fff);
+    color: #fff;
+    border-radius: 1vh;
+    padding: 0.2em 0.8em;
+    font-size: 0.9em;
+    margin-left: 0.5em;
+}
+
+.peachColor {
+    color: var(--peach, #ffb86b);
+}
+
+@media (max-width: 900px) {
+    .container {
+        padding: 2vh 2vw 3vh 2vw;
+    }
+    .profile {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2vh;
+    }
+    .section {
+        flex-direction: column;
+        gap: 1vh;
+    }
+    .block {
+        padding: 2vh 4vw;
+    }
+}
+/* À placer dans Style2.css */
+ul.formation-list, ul.experience-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.formation-item, .experience-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background: #f8fafc;
+    border-radius: 1vh;
+    padding: 1em;
+    margin-bottom: 1em;
+    box-shadow: 0 1px 4px rgba(82,113,255,0.05);
+}
+.formation-actions, .experience-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+.btn-edit, .btn-delete {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em;
+    transition: color 0.2s;
+}
+.btn-edit:hover { color: #526fff; }
+.btn-delete:hover { color: #e74c3c; }
+.formation-ecole {
+    color: #555;
+    font-size: 1em;
+}
