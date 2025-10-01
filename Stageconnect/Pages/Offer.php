@@ -21,6 +21,8 @@ $categories_stmt = $pdo->query("
 $categories = $categories_stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
+
+
 ?>
 
 <!DOCTYPE html>
@@ -136,15 +138,29 @@ $categories = $categories_stmt->fetchAll(PDO::FETCH_ASSOC);
                 <button class="keyword-btn">RH</button>
                 <button class="keyword-btn">Design</button>
                 <button class="keyword-btn">Développement Web</button>
+                <button class="keyword-btn">Autres</button>
                 </div>
             </div>
         </div>
+<?php
+      $search = isset($_GET['q']) ? trim($_GET['q']) : '';
+$cat_filter = isset($_GET['cat']) && $_GET['cat'] !== '' ? (int) $_GET['cat'] : null;
+
+?>
 
          <div class="SectionLinks">
-                    <div class="SearchSpace">
-                        <input type="text" class="search-input" placeholder="Rechercher une offre..." />
-                        <button class="search-btn">Rechercher</button>
-                    </div>
+                   <form method="get" class="SearchSpace" style="display:flex;gap:1em;">
+    <input type="text" class="search-input" name="q" placeholder="Rechercher une offre..." value="<?php echo isset($_GET['q']) ? htmlspecialchars($_GET['q']) : ''; ?>" />
+    <select name="cat" class="search-select">
+        <option value="">Toutes catégories</option>
+        <?php foreach ($categories as $cat): ?>
+            <option value="<?php echo $cat['id']; ?>" <?php if(isset($_GET['cat']) && $_GET['cat'] == $cat['id']) echo 'selected'; ?>>
+                <?php echo htmlspecialchars($cat['nom']); ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+    <button class="search-btn" type="submit">Rechercher</button>
+</form>
                 </div>
 
                 <!-- Ajoute ou remplace ce script dans Offer.html -->
@@ -152,43 +168,133 @@ $categories = $categories_stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
         <!-- Ajoute cette section juste après la section des mots-clés dans Offer.html -->
+
+
+
 <div class="offers-section">
- <?php
- foreach ($categories as $categorie) {
-    echo '<div class="categories">';
-    echo '<h2 class="category">' . htmlspecialchars($categorie['nom']) . '</h2>';
-    echo '<div class="offers-container">';
+<?php
+if ($categories) {
+    foreach ($categories as $categorie) {
+        // Si un filtre catégorie est actif et que ce n'est pas la catégorie courante => on saute
+        if ($cat_filter !== null && $cat_filter !== (int)$categorie['id']) {
+            continue;
+        }
 
-    // 3. Récupérer les offres pour cette catégorie
-    $offers_stmt = $pdo->prepare("
-        SELECT * FROM offres 
-        WHERE categorie_id = :cat_id AND statut = 'actif'
-        ORDER BY date_publication DESC
-    ");
-    $offers_stmt->execute(['cat_id' => $categorie['id']]);
-    $offers = $offers_stmt->fetchAll(PDO::FETCH_ASSOC);
+        echo '<div class="categories">';
+        echo '<h2 class="category">' . htmlspecialchars($categorie['nom']) . '</h2>';
+        echo '<div class="offers-container">';
 
-    foreach ($offers as $offer) {
-        $image = !empty($offer['image']) ? "../Pages/dashboard_entreprise/static/img/offers/" . htmlspecialchars($offer['image']) : "../Assets/Images/stagiaire.jpg";
+        // Préparer la requête des offres pour cette catégorie en appliquant le filtre recherche si nécessaire
+        $sql = "SELECT * FROM offres WHERE categorie_id = :cat_id AND statut = 'active' ";
+        $params = ['cat_id' => $categorie['id']];
 
-        echo '<div class="offer-card">';
-        echo '<img src="' . $image . '" alt="Offre" class="offer-img">';
-        echo '<h3 class="offer-title">' . htmlspecialchars($offer['titre_poste']) . '</h3>';
-        echo '<p class="offer-desc">' . htmlspecialchars($offer['description']) . '</p>';
-        echo '<div class="offer-actions">';
-        echo '<a href="#">Voir plus</a>';
-        echo '<button class="offer-btn apply">Postuler</button>';
-        echo '</div>';
-        echo '</div>';
-    }
+        if ($search !== '') {
+            $sql .= " AND titre_poste LIKE :search ";
+            $params['search'] = '%' . $search . '%';
+        }
 
-    echo '</div>'; // .offers-container
-    echo '</div>'; // .categories
+        $sql .= " ORDER BY date_publication DESC";
+        $offers_stmt = $pdo->prepare($sql);
+        $offers_stmt->execute($params);
+        $offers = $offers_stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (!empty($offers)) {
+            foreach ($offers as $offer) {
+                $image = !empty($offer['image'])
+                    ? "../Pages/dashboard_entreprise/static/img/offers/" . htmlspecialchars($offer['image'])
+                    : "../Assets/Images/NouvelOffre.png";
+
+                echo '<div class="offer-card">';
+                echo '<img src="' . htmlspecialchars($image) . '" alt="Offre" class="offer-img">';
+                echo '<h3 class="offer-title">' . htmlspecialchars($offer['titre_poste']) . '</h3>';
+
+                // description tronquée
+                $maxLength = 120;
+                $desc = htmlspecialchars($offer['description'] ?? '');
+                if (mb_strlen($desc) > $maxLength) {
+                    $desc = mb_substr($desc, 0, $maxLength) . '...';
+                }
+                echo '<p class="offer-desc">' . $desc . '</p>';
+
+                echo '<p class="offer-datepub">' . htmlspecialchars($offer['date_publication'] ?? '') . '</p>';
+
+                echo '<div class="offer-actions">';
+                echo '<a href="./offerDetail.php?id=' . urlencode($offer['id']) . '">Voir plus</a>';
+            if (isset($_SESSION['entity']) && $_SESSION['entity'] === 'etudiant') {
+    echo '
+    <form method="post" action="../Controllers/postuler_controller.php" style="display:inline;" onsubmit="return confirm(\'Voulez-vous vraiment postuler à cette offre ?\');">
+        <input type="hidden" name="offre_id" value="' . htmlspecialchars($offer['id']) . '">
+        <button type="submit" class="offer-btn apply">Postuler</button>
+    </form>
+    ';
 }
+                echo '</div>'; // offer-actions
 
- ?>
+                echo '</div>'; // offer-card
+            }
+        } else {
+            echo '<p class="no-offer">Aucune offre disponible dans cette catégorie.</p>';
+        }
+
+        echo '</div>'; // .offers-container
+        echo '</div>'; // .categories
+    }
+} else {
+    echo '<p>Aucune catégorie trouvée avec des offres actives.</p>';
+}
+?>
 </div>
 
+    
+
+
+    </div>
+    </div>
+
+</div>
+
+<?php if (isset($_GET['postule'])): 
+    $popupMsg = '';
+    $offerId = isset($_GET['offre_id']) ? intval($_GET['offre_id']) : 0;
+    if ($_GET['postule'] === 'success') {
+        $popupMsg = "Votre postulation a bien été enregistrée !";
+    } elseif ($_GET['postule'] === 'exists') {
+        $popupMsg = "Vous avez déjà postulé à cette offre.";
+    } else {
+        $popupMsg = "Erreur lors de la postulation.";
+    }
+?>
+<div id="postule-popup" class="popup-overlay">
+    <div class="popup-content">
+        <p><?php echo $popupMsg; ?></p>
+        <div style="margin-top:1em;">
+            <?php if ($offerId > 0): ?>
+                <a href="offerDetail.php?id=<?php echo $offerId; ?>" class="popup-btn">Voir l'offre</a>
+            <?php endif; ?>
+            <button onclick="closePostulePopup()" class="popup-btn close-btn">Fermer</button>
+        </div>
+    </div>
+</div>
+<script>
+function closePostulePopup() {
+    document.getElementById('postule-popup').style.display = 'none';
+}
+setTimeout(closePostulePopup, 10000); // 10 secondes
+</script>
+<style>
+.popup-overlay {
+    position: fixed; left: 0; top: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; z-index: 9999;
+}
+.popup-content {
+    background: #fff; padding: 2em 2.5em; border-radius: 10px; box-shadow: 0 2px 16px #0002; text-align: center;
+}
+.popup-btn {
+    background: #ff7f50; color: #fff; border: none; padding: 0.6em 1.2em; border-radius: 5px; margin: 0 0.5em; cursor: pointer; text-decoration: none;
+}
+.close-btn { background: #888; }
+</style>
+<?php endif; ?>
 <!-- Ajoute ce style à la fin de ton fichier Style.css -->
 
 

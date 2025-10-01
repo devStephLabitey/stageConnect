@@ -69,6 +69,7 @@
                         </div>
 
                         <h1 >
+                            
                             Une plateforme connectant les acteurs du monde professionnel 
                         </h1>
 

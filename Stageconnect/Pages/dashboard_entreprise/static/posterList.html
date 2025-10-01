@@ -1,3 +1,52 @@
+<?php
+// filepath: c:\Users\HP\Desktop\DOCUMENTS\Soutenance\AppliStageConnect\Stageconnect\Pages\Offer.php
+
+session_start();
+require_once '../../../Models/config.php';
+if (!isset($_SESSION['user_id']) || $_SESSION['entity'] !== 'entreprise') {
+    header('Location: ../../../Auth/Login.php');
+    exit();
+}
+// Vérifie la connexion de l'entreprise
+$user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+
+// Récupérer l'ID de l'offre depuis l'URL
+$offer_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+// Récupérer les infos de l'offre
+$offer = null;
+$entreprise = null;
+if ($offer_id > 0) {
+    $stmt = $pdo->prepare("SELECT * FROM offres WHERE id = :id");
+    $stmt->execute([':id' => $offer_id]);
+    $offer = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($offer) {
+        // Récupérer l'entreprise associée à l'offre
+        $stmt2 = $pdo->prepare("SELECT * FROM entreprises WHERE id = :id");
+        $stmt2->execute([':id' => $offer['entreprise_id']]);
+        $entreprise = $stmt2->fetch(PDO::FETCH_ASSOC);
+    }
+}
+
+
+if ($user_id) {
+    // Récupère les infos de l'entreprise
+    $stmt = $pdo->prepare("SELECT * FROM entreprises WHERE id = :id");
+    $stmt->execute([':id' => $user_id]);
+    $entreprise = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // Récupère les offres publiées par cette entreprise
+    $stmtOffres = $pdo->prepare("SELECT * FROM offres WHERE entreprise_id = :eid ORDER BY id DESC");
+    $stmtOffres->execute(['eid' => $user_id]);
+    $offres = $stmtOffres->fetchAll(PDO::FETCH_ASSOC);
+
+} else {
+    header('Location: ../Auth/Login.php');
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +58,7 @@
 	<title>Votre Dashboard - Entreprise </title>
 	<link href="css/app.css" rel="stylesheet">
 	<link href="css/app2.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/app3.css">
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <link rel="stylesheet" href="../../../Assets/Images/Logos/">
@@ -44,7 +94,7 @@
             </a>
 					</li>
 
-					<li class="sidebar-item active">
+					<li class="sidebar-item ">
 						<a class="sidebar-link" href="pages-blank.php">
                          <i class="align-middle" data-feather="book"></i> <span class="align-middle">Blank</span>
                         </a>
@@ -54,7 +104,7 @@
 
 				<link rel="stylesheet" href="">
 
-				
+				<link rel="stylesheet" href="">
 		</nav>
 
 		<div class="main">
@@ -73,7 +123,7 @@
               </a>
 
 							<a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" data-bs-toggle="dropdown">
-                <img src="img/avatars/avatar.jpg" class="avatar img-fluid rounded me-1" alt="Charles Hall" /> <span class="text-dark">Charles Hall</span>
+                  <img src="<?php echo !empty($entreprise['logo']) ? '../../../Assets/Images/Logos/' . htmlspecialchars($entreprise['logo']) : 'img/avatars/avatar-4.jpg'; ?>"  class="avatar img-fluid rounded me-1" alt="Charles Hall" />  <span class="text-dark"><?php echo htmlspecialchars($entreprise['nom_entreprise']) ?></span>
               </a>
 							<div class="dropdown-menu dropdown-menu-end">
 								<a class="dropdown-item" href="pages-profile.php"><i class="align-middle me-1" data-feather="user"></i> Profile</a>
@@ -85,24 +135,42 @@
 					</ul>
 				</div>
 			</nav>
-
 			<!-- ...existing code... -->
-<main class="content">
+            <main class="content">
 				<div class="container-fluid p-0">
 
-					<h1 class="h3 mb-3">Blank Page</h1>
+					<h1 class="h3 mb-3">Liste de(s) postulant(s)</h1>
 
-					<div class="row">
-						<div class="col-12">
-							<div class="card">
-								<div class="card-header">
-									<h5 class="card-title mb-0">Empty card</h5>
-								</div>
-								<div class="card-body">
-								</div>
-							</div>
-						</div>
-					</div>
+				                <div class="row">
+                    <div class="col-12">
+                        <div class="card p-4">
+                            
+                           <div class="list-group-item postulant-card mb-3">
+    <div class="d-flex align-items-center">
+        <img src="../../../Assets/Images/stagiaire.jpg" alt="Photo" class="rounded-circle me-3" style="width:60px;height:60px;object-fit:cover;">
+        <div>
+            <h4 class="mb-1">Nom du postulant</h4>
+            <p class="mb-1">Email : email@exemple.com</p>
+            <p class="mb-1">Date de postulation : 2023-09-30</p>
+            <div class="mt-2">
+                <form method="post" action="accepter_postulant.php" style="display:inline;">
+                    <input type="hidden" name="postulation_id" value="ID_POSTULATION">
+                    <button type="submit" class="btn btn-success btn-sm">Accepter</button>
+                </form>
+                <form method="post" action="rejeter_postulant.php" style="display:inline;">
+                    <input type="hidden" name="postulation_id" value="ID_POSTULATION">
+                    <button type="submit" class="btn btn-danger btn-sm">Rejeter</button>
+                </form>
+            </div>
+        </div>
+        <div class="ms-auto">
+            <a href="#" class="btn btn-primary btn-sm">Voir profil</a>
+        </div>
+    </div>
+</div>
+                        </div>
+                    </div>
+                </div>
 
 				</div>
 			</main>

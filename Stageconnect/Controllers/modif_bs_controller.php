@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':id'             => $entreprise_id
         ]);
 
-        header('Location: ../Entreprise/Profil.php?update=success');
+        header('Location: ../Entreprise/Profil.php');
         exit();
     } catch (PDOException $e) {
         $errorMsg = urlencode("Erreur lors de la mise à jour.");

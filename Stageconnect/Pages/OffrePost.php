@@ -137,8 +137,8 @@ $experiences = $stmt_exp->fetchAll(PDO::FETCH_ASSOC);
 
                 <hr>
                 <div class="buttons">
-                          <button class="active"><a href="Profil.php">Mon Profil</a></button>
-                          <button><a href="OffrePost.php">Offre(s) Postulé(s)</a></button>
+                          <button><a href="Profil.php">Mon Profil</a></button>
+                          <button class="active"><a href="  .php">Offre(s) Postulé(s)</a></button>
                           <button><a href="myCv.html">Mon CV</a></button>
                     </div>
 
@@ -150,111 +150,78 @@ $experiences = $stmt_exp->fetchAll(PDO::FETCH_ASSOC);
             </div>
 
             
-            <div class="container">
-                <div class="header">
-                    <div class="">
-                        <a href="./modif_profil.php" class="bluebg btn">Modifier votre Profil</a>
+                       <div class="container">
+    <h2 class="peachColor" style="margin-bottom:2vh;">Mes offres postulé(es)</h2>
+
+    <div class="offers-container">
+        <?php
+        // Récupérer les offres auxquelles l'étudiant a postulé
+        $sql = "SELECT o.*, p.date_postulation, e.nom_entreprise
+                FROM postulations p
+                JOIN offres o ON o.id = p.offre_id
+                JOIN entreprises e ON e.id = o.entreprise_id
+                WHERE p.etudiant_id = :etudiant_id
+                ORDER BY p.date_postulation DESC";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([':etudiant_id' => $user_id]);
+        $offres_postulees = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        if ($offres_postulees) {
+            foreach ($offres_postulees as $offer) {
+                $image = !empty($offer['image'])
+                    ? "../Pages/dashboard_entreprise/static/img/offers/" . htmlspecialchars($offer['image'])
+                    : "../Assets/Images/NouvelOffre.png";
+                ?>
+                
+                <style>
+                    :root{
+                        --attente: #17b617;
+                        --attenteBg: #08d20834;
+
+                        --validee: #5c9ad1; 
+                        --valideeBg: #007bff47;
+
+                        --rejeteeBg: #ff5757;
+                        --rejetee: white;
+                    }
+                </style>
+
+                <div class="offer-card">
+
+                
+                    <div class="statutPlace">
+                        <div class="statut" style="color: var(--attente); background: var(--attenteBg);">Attente</div>
+                    </div>
+
+                    <img src="<?= $image ?>" alt="Offre" class="offer-img">
+                    <h3 class="offer-title"><?= htmlspecialchars($offer['titre_poste']) ?></h3>
+                    <?php
+                    // description tronquée
+                $maxLength = 120;
+                $desc = htmlspecialchars($offer['description'] ?? '');
+                if (mb_strlen($desc) > $maxLength) {
+                    $desc = mb_substr($desc, 0, $maxLength) . '...';
+                }
+                echo '<p class="offer-desc">' . $desc . '</p>';
+                
+                ?>
+
+                    <p class="offer-entreprise"><b>Entreprise :</b> <?= htmlspecialchars($offer['nom_entreprise']) ?></p>
+                    <p class="offer-datepub"><b>Postulé le :</b> <?= htmlspecialchars($offer['date_postulation']) ?></p>
+                    <div class="offer-actions">
+                        <a href="offerDetail.php?id=<?= urlencode($offer['id']) ?>">Voir plus</a>
                     </div>
                 </div>
-
-                <div class="profile">
-                    <img src="../Assets/Images/etudiant.jpg" alt="Jeremy Rose"/>
-                    <div class="profile-info">
-                        <div class="user-info-profil">
-                            <h2><?php echo htmlspecialchars($user['nom_complet']); ?></h2>
-                            <p class="role"><?php echo htmlspecialchars($user['filiere']); ?></p>
-                        </div>
-     
-                        <div class="rating" style="color: gold;">
-                             <?php echo htmlspecialchars($user['annee']); ?>
-                        </div>
-        
-                        <div class="buttons">
-                          <button>Ajouter un profil</button> <button>Voir CV</button>
-                        </div>
-      </div>
+                
+                <?php
+            }
+        } else {
+            echo '<p style="color:#888;">Vous n\'avez postulé à aucune offre pour le moment.</p>';
+        }
+        ?>
     </div>
-
-    <div class="tabs">
-      <a href="#" class="active">À propos</a>
-    </div>
-
-    <div class="section">
-      <div class="block">
-        <h3 class="peachColor">Contact Information</h3>
-         <p><strong>Email:</strong> <a href="mailto:<?php echo htmlspecialchars($user['email']); ?>"><?php echo htmlspecialchars($user['email']); ?></a></p>
-        <p><strong>Filière:</strong> <?php echo htmlspecialchars($user['filiere']); ?></p>
-        <p><strong>Année:</strong> <?php echo htmlspecialchars($user['annee']); ?></p>
-        <p><strong>Matricule:</strong> <?php echo htmlspecialchars($user['matricule']); ?></p>
-        <br><br>
-     
-          <h3 class="peachColor">Compétences</h3>
-          <?php if (!empty($competences)): ?>
-              <?php foreach ($competences as $comp): ?>
-                  <p><?php echo htmlspecialchars($comp); ?></p>
-              <?php endforeach; ?>
-          <?php else: ?>
-              <p>Aucune compétence renseignée.</p>
-          <?php endif; ?>
-
-      </div>
-     
-<!-- Formations -->
-<div class="block">
-  <h3 class="peachColor">Formations</h3>
-  <?php if (!empty($formations)): ?>
-      <ul class="formation-list">
-      <?php foreach ($formations as $formation): ?>
-          <li class="formation-item">
-            <div>
-              <strong><?php echo htmlspecialchars($formation['diplome']); ?></strong>
-              <span class="blueColor"><?php echo htmlspecialchars($formation['date_obtention']); ?></span><br>
-              <span class="formation-ecole"><?php echo htmlspecialchars($formation['ecole']); ?></span>
-            </div>
-            <!-- Boutons pour modification/suppression (à relier plus tard) -->
-          </li>
-      <?php endforeach; ?>
-      </ul>
-  <?php else: ?>
-      <p>Aucune formation renseignée.</p>
-  <?php endif; ?>
- 
-
 </div>
 
-<!-- Expériences -->
-<div class="block">
-  <h3 class="peachColor">Expériences</h3>
-  <?php if (!empty($experiences)): ?>
-      <ul class="experience-list">
-      <?php foreach ($experiences as $exp): ?>
-          <li class="experience-item">
-            <div>
-              <strong><?php echo htmlspecialchars($exp['poste']); ?></strong>
-              <span class="badge"><?php echo htmlspecialchars($exp['type_experience']); ?></span><br>
-              <span><?php echo htmlspecialchars($exp['entreprise']); ?> - <?php echo htmlspecialchars($exp['adresse']); ?></span><br>
-              <small>
-                <?php echo htmlspecialchars($exp['date_debut']); ?>
-                <?php if ($exp['date_fin']) echo ' au ' . htmlspecialchars($exp['date_fin']); ?>
-              </small>
-            </div>
-            <!-- Boutons pour modification/suppression (à relier plus tard) -->
-            <div class="experience-actions">
-              <button class="btn-edit" title="Modifier">✏️</button>
-              <button class="btn-delete" title="Supprimer">🗑️</button>
-            </div>
-          </li>
-      <?php endforeach; ?>
-      </ul>
-  <?php else: ?>
-      <p>Aucune expérience renseignée.</p>
-  <?php endif; ?>
-  <button class="btn peachbg" style="margin-top:1em;">Ajouter une expérience</button>
-</div>
-      
-      
-    </div>
-  </div>
 
         </div>
 
@@ -322,19 +289,6 @@ document.querySelectorAll('.popup-overlay').forEach(function(popup){
     display: flex;
     gap: 1em;
     justify-content: flex-end;
-
-    .body_container .sidebar{
-    width: 20%;
-    background: var(--white);
-    padding: 4vh;
-    border-radius: 2vh;
-    position: relative;
-    position: sticky;
-    top: 2vh;
-    height: 70vh;
-    padding-top: 22vh;
-}
-
 }
 </style>
 

@@ -44,7 +44,7 @@ if ($user_id) {
 	<div class="wrapper">
 		<nav id="sidebar" class="sidebar js-sidebar">
 			<div class="sidebar-content js-simplebar">
-				<a class="sidebar-brand" href="dashBoard.php">
+				<a class="sidebar-brand" href="../../index.php">
           			<span class="align-middle"><img src="./img/icons/StageConnec+removebg.png" alt="" style="height: 6vh;"></span>
         		</a>
 
@@ -163,12 +163,24 @@ if ($user_id) {
             <div class="offer-card">
               <img src="<?= !empty($offre['image']) ? './img/offers/' . htmlspecialchars($offre['image']) : './img/offers/NouvelOffre.png'; ?>" alt="Offre" class="offer-img">
                 <h3 class="offer-title"><?= htmlspecialchars($offre['titre_poste']) ?></h3>
-                <p class="offer-desc"><?= htmlspecialchars($offre['description']) ?></p>
+                <?php
+                 // description tronquée
+                $maxLength = 120;
+                $desc = htmlspecialchars($offre['description'] ?? '');
+                if (mb_strlen($desc) > $maxLength) {
+                    $desc = mb_substr($desc, 0, $maxLength) . '...';
+                }
+                echo '<p class="offer-desc">' . $desc . '</p>';
+                ?>
                 <div class="offer-actions">
                     <a href="detail_offre.php?id=<?= $offre['id'] ?>" class="offer-link">Voir plus</a>
                     <form action="../../../Controllers/delete_offer_controller.php" method="POST" onsubmit="return confirm('Supprimer cette offre ?');" style="display:inline;">
                         <input type="hidden" name="offre_id" value="<?= $offre['id'] ?>">
                         <button type="submit" class="offer-btn apply">Supprimer</button>
+                    </form>
+                    <form action="../../../Controllers/update_offer_controller.php" method="POST" style="display:inline;">
+                        <input type="hidden" name="offre_id" value="<?= $offre['id'] ?>">
+                        <button type="submit" class="offer-btn" style="Background: blue; color: white; padding: 1vh; border: none; border-radius: 1vh;">Modifier</button>
                     </form>
                 </div>
             </div>

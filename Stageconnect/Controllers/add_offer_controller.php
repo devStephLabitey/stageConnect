@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $type_contrat = $_POST['type'] ?? '';
     $categorie_id = $_POST['category'] ?? null;
     $date_publication = date('Y-m-d');
-    $statut = "actif";
+    $statut = "active";
 
     // Gestion de l’image
     $image_path = null;

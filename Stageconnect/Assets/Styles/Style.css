@@ -17,6 +17,7 @@
   -moz-osx-font-smoothing: grayscale;
 
    --blue: #5271ff;
+   --blue2: #5272ff1b;
     --peach: #ffbd59;
     --red: #ff5757;
     --red2: #ff57576d;
@@ -31,11 +32,11 @@ html{
 
 a {
   font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+ color: var(--blue);
+  text-decoration: none;
 }
 a:hover {
-  color: #535bf2;
+  color: #fff;
 }
 
 body {
@@ -775,6 +776,7 @@ footer{
     border-radius: 1.5vh;
     box-shadow: 0 2px 8px rgba(27, 31, 49, 0.384);
     flex-direction: column;
+    z-index: 100;
 }
 .profil-popup a{
     color: var(--blue);
@@ -868,6 +870,7 @@ footer{
 .offers-section {
     width: 100%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     margin: 6vh 0;
 }
@@ -889,9 +892,11 @@ footer{
     padding: 2vh 2vh 3vh 2vh;
     display: flex;
     flex-direction: column;
-    align-items: center;
     transition: box-shadow 0.2s, transform 0.2s;
     cursor: pointer;
+}
+.offer-datepub{
+    margin-top: 2vh;
 }
 .offer-card:hover {
     box-shadow: 0 6px 24px rgba(82,113,255,0.18);
@@ -1034,6 +1039,7 @@ footer{
 
     .profile-info h2 {
       margin: 0;
+      text-align: left;
     }
      .profile-info a {
       margin: 0;
@@ -1244,4 +1250,124 @@ h2 {
     h2 {
         font-size: 1.3em;
     }
+}
+
+
+/* détails offres css */
+
+.bigBlock{
+    display: flex;
+    height: 90vh;
+    gap: 5vh;
+    margin-top: 4vh;
+    justify-content: space-between;
+    padding-left: 3%;
+    padding-right: 3%;
+    padding-bottom: 8vh;
+    position: relative;
+}
+.bigBlock .detailBlock{
+    background: #1976d206;
+    width: 65%;
+
+}
+
+.bigBlock .detailBlock img{
+    height: 40vh;
+}
+.bigBlock .detailBlock .Offer_title{
+    font-size:2.5em ;
+    margin-top: 1vh;
+    margin-bottom: 2vh;
+    color: #0000007b;
+}
+.bigBlock .detailBlock .Offer_title span{
+    color: var(--blue);
+}
+.bigBlock .detailBlock p {
+    text-align: justify;
+    margin-top: 1vh;
+    margin-bottom: 3vh;
+}
+.bigBlock .detailBlock .infoBulles{
+    display: flex;
+    justify-content: space-between;
+}
+.bigBlock .detailBlock .infoBulles .part1{
+    display: flex;
+    gap: 2vh;
+}
+.bigBlock .detailBlock .infoBulles .part1 .bull{
+    padding: 1vh 3vh;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #00000070;
+    gap: 2vh;
+    border-radius: 20vh;
+}
+.bigBlock .detailBlock .infoBulles .part2 .postbtn{
+    animation: clign 1s linear infinite;
+    transform-origin: center;
+}
+/* @keyframes clign {
+    0%{
+        background: var(--blue);
+    }
+    100%{
+        background: var(--blue2);
+    }
+} */
+
+.bigBlock .moreOfferBlock{
+    width: 32%;
+    position: relative;
+    
+}
+
+.bigBlock .moreOfferBlock h3{
+    color: var(--peach);
+    font-size: 1.3em;
+}
+.bigBlock .moreOfferBlock .offer_contain{
+    height: 70vh;
+    background: whitesmoke;
+    padding-top: 4vh;
+    overflow-X: hidden;
+    padding-left: 1vh;
+    border-radius: 1vh;
+}
+.offer-card{
+    margin-bottom: 2vh;
+}
+.bigBlock .moreOfferBlock .keyWords_content{
+    margin-bottom: 2vh;
+}
+.bigBlock .moreOfferBlock .keyWords_content .keySome{
+    width: 92%;
+}
+.postInfosBs{
+    display: flex;
+    gap: 4vh;
+    align-items: center;
+    padding-bottom: 2vh;
+}
+.postInfosBs .bsInfo{
+    display: flex;
+    gap: 1vh;
+    font-weight: 700;
+    align-items: center;
+}
+.postInfosBs .bsInfo .bsLogo{
+    height: 8vh;
+    width: 8vh;
+    border-radius: 100%;
+    background: white;
+}
+.postDate{
+    color: #00000070;
+}
+.postDate span{
+    color: var(--blue);
 }
